@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'widgets/person_card.dart';
 import 'transaction_page.dart';
+import 'statistics_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,9 +30,7 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     final String? savedData = prefs.getString('debt_data');
     if (savedData != null) {
-      setState(() {
-        people = jsonDecode(savedData);
-      });
+      setState(() { people = jsonDecode(savedData); });
     }
   }
 
@@ -50,90 +48,48 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Student Debt Manager"), centerTitle: true),
-      body: ListView.builder(
+      appBar: AppBar(
+        title: const Text("PTP Debt Analytics"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.analytics_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StatisticsPage(people: people)),
+            ).then((_) => setState(() {})),
+          )
+        ],
+      ),
+      body: people.isEmpty
+          ? const Center(child: Text("No data. Tap + to start sampling."))
+          : ListView.builder(
         itemCount: people.length,
         itemBuilder: (context, index) {
           double total = 0;
           for (var t in people[index]['transactions']) {
             total += t['amount'];
           }
-
-          return Dismissible(
-            key: Key(people[index]['name'] + index.toString()),
-            direction: DismissDirection.endToStart,
-            // --- NEW: Confirmation Dialog Logic ---
-            confirmDismiss: (direction) async {
-              return await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text("Delete Person?"),
-                  content: Text("Are you sure you want to remove ${people[index]['name']} and all their data?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("Cancel"),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text("Delete", style: TextStyle(color: Colors.red)),
-                    ),
-                  ],
+          return ListTile(
+            title: Text(people[index]['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text("Net: ${total.toStringAsFixed(2)} PKR"),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TransactionPage(
+                  person: people[index],
+                  fullPeopleList: people,
                 ),
-              );
-            },
-            onDismissed: (direction) {
-              setState(() {
-                people.removeAt(index);
-              });
-              _saveData();
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Person removed")));
-            },
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 20),
-              child: const Icon(Icons.delete, color: Colors.white),
-            ),
-            child: PersonCard(
-              name: people[index]['name'],
-              totalAmount: total,
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TransactionPage(person: people[index]),
-                  ),
-                );
-                setState(() {});
-                _saveData();
-              },
-            ),
+              ),
+            ).then((_) => setState(() {})),
           );
         },
       ),
-      // --- NEW: Updated FAB with "Made by Abubkar Ch" ---
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () => _showAddDialog(),
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.only(right: 4.0),
-            child: Text(
-              "Made by Abubkar Ch",
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey,
-              ),
-            ),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddDialog(),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -142,7 +98,7 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("New Person"),
+        title: const Text("Add New Peer"),
         content: TextField(controller: _nameController, decoration: const InputDecoration(hintText: "Enter Name")),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
