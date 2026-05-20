@@ -1,139 +1,78 @@
-# 💸 Student Debt Manager
+# P2P Student Ledger — Statistical Risk Engine
 
-> A lightweight Flutter app for university students to track informal debts and shared expenses — no more forgetting who owes what.
+**MATH-361 Probability & Statistics** | NUST CEME, DE-45
 
-![Flutter](https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=dart&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey?style=flat-square)
-![Storage](https://img.shields.io/badge/Storage-SharedPreferences-blue?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat-square)
+A Flutter app that tracks informal student-to-student loans and builds a statistical reliability score for each peer — because your friends don't have credit scores, but their repayment history tells a story.
 
 ---
 
-## 📌 Overview
+## The Problem
 
-In hostel life and university settings, small financial exchanges happen constantly — canteen runs, photocopies, ride shares, hostel groceries. Manual tracking is error-prone and easy to forget.
+University students lend money to each other constantly. Food, transport, printing, whatever. None of it goes through a bank, so there's no record and no accountability metric. You're just guessing whether a specific person is likely to pay you back.
 
-**Student Debt Manager** is a local-first mobile app that gives every student a centralized ledger — create a profile per person, log transactions, and instantly see who owes what. All data stays on the device. No account. No internet. No privacy concerns.
-
----
-
-## ✨ Features
-
-### 📒 Dynamic Ledger System
-Create individual profiles for different people and maintain a dedicated transaction history for each — every person gets their own clean record.
-
-### 🧮 Automated Balance Calculation
-Net balance is computed automatically per person. Color-coded at a glance:
-- 🟢 **Green** — they owe you
-- 🔴 **Red** — you owe them
-
-### 🕐 Real-time Timestamps
-Every transaction is automatically logged with the exact date and time — full transparent audit trail, no manual date entry needed.
-
-### 💾 Data Persistence
-Uses `shared_preferences` (local key-value storage) to persist all data across app restarts and device reboots. Nothing is lost when you close the app.
-
-### 🧹 User-Centric UI
-- Minimalist dashboard — see all balances at one glance
-- **Swipe-to-Delete** for quick removal of transactions
-- Confirmation dialogs to prevent accidental data loss
+This project applies probability and statistics to that guess — turning local transaction history into a personal reliability index for each peer.
 
 ---
 
-## 📱 App Screens
+## What It Does
 
-| Screen | Description |
-|--------|-------------|
-| **Dashboard** | List of all people with their net balance, color-coded |
-| **Person Detail** | Full transaction history with one person |
-| **Add Transaction** | Log a new debt — amount, direction (you owe / they owe), note |
-| **Settings** | App preferences and data management |
+The app runs entirely offline. One user records all transactions locally (asymmetric information setup — only your side of the ledger exists). The statistical engine then runs on that sample data to answer questions like:
 
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Flutter 3.x |
-| Language | Dart |
-| Local Storage | `shared_preferences` (key-value) |
-| Architecture | Master-Detail Pattern |
-| State Management | Stateful Widget Management |
-| UI | Material Design |
+- What's the probability this peer pays back on time, given their history? `P(OnTime | Peer)`
+- What's the expected value of my total recoverable assets right now?
+- Is this peer's repayment behavior statistically different from the others, or just noise?
+- Are debts distributed across categories (food, transport, academic) evenly, or is one dominating?
 
 ---
 
-## 📁 Project Structure
+## Statistics Implemented
 
-```
-student-debt-manager/
-│
-├── lib/
-│   ├── main.dart                   # App entry point
-│   ├── models/
-│   │   ├── person.dart             # Person profile model
-│   │   └── transaction.dart        # Transaction model (amount, type, timestamp)
-│   ├── screens/
-│   │   ├── dashboard_screen.dart   # All contacts + net balances
-│   │   ├── detail_screen.dart      # Transaction history per person
-│   │   └── add_transaction_screen.dart
-│   ├── widgets/
-│   │   ├── person_card.dart        # Balance card with color coding
-│   │   └── transaction_tile.dart   # Swipeable transaction list item
-│   └── services/
-│       └── storage_service.dart    # shared_preferences CRUD
-│
-├── pubspec.yaml
-└── README.md
-```
+**Graphical Analysis**
+Histograms and boxplots of transaction amounts to visualize spending variance across peers and categories (e.g., 200 PKR vs. 2390 PKR spread).
 
-> **Note:** Update this structure to match your actual file names before pushing.
+**Conditional Probability**
+Per-peer on-time repayment probability calculated from individual history — not a group average.
+
+**Random Variables & Expectation**
+Each peer's outstanding debt treated as a random variable. Expected value `E[X]` computed for total recoverable assets.
+
+**Point Estimation**
+The app is offline with no central database — so population-level behavior (average peer reliability) is estimated from the local sample using point estimators.
+
+**Chi-Square Goodness of Fit**
+Tests whether transaction purposes are uniformly distributed or skewed toward specific categories.
+
+**Hypothesis Testing**
+Determines whether a peer's repayment pattern is statistically significant or just variance.
 
 ---
 
-## ⚙️ Setup & Run
+## Tech Stack
 
-```bash
-# Install dependencies
-flutter pub get
-
-# Run on connected device or emulator
-flutter run
-
-# Build release APK
-flutter build apk --release
-```
-
-**Requirements:** Flutter SDK 3.x, Dart 3.x, Android Studio or VS Code with Flutter extension.
+- **Frontend / App** — Flutter (offline-first, local persistence)
+- **Statistics Engine** — Dart (implemented inline with the app)
+- **Data Storage** — Local only, no backend
 
 ---
 
-## 📸 Screenshots
+## Course Alignment
 
-> *(Add screenshots here — Dashboard, Detail screen, Add Transaction form)*
-
----
-
-## 🔮 Planned Features
-
-- [ ] Group expense splitting (split a bill between multiple people)
-- [ ] Push notification reminders for unsettled debts
-- [ ] Export transaction history as PDF or CSV
-- [ ] Cloud sync across devices (Firebase)
-- [ ] QR code to quickly add a contact
+| Syllabus Topic | Implementation |
+|---|---|
+| Graphical Representation | Histograms + boxplots of transaction data |
+| Conditional Probability | `P(OnTime \| Peer)` per-peer calculation |
+| Random Variables & Expectation | Expected recoverable debt `E[X]` |
+| Point Estimation | Population behavior from local sample |
+| Chi-Square Test | Transaction category distribution test |
+| Hypothesis Testing | Peer repayment significance test |
 
 ---
 
-## 💡 Why Local-First?
+## Course Info
 
-Most expense apps require account creation and upload your data to a server. This app deliberately keeps everything on your device — no signup, no sync, no data exposure. For informal peer-to-peer tracking among friends, that's the right tradeoff.
-
----
-
-## 👤 Author
-
-**Abu-Bakar Chaudhary**  
-Computer Engineering · NUST · Class of 2027  
-[GitHub](https://github.com/abu-bakarchaudhary) · [LinkedIn](https://linkedin.com/in/abubakar-chaudhary-ce45)
+| | |
+|---|---|
+| Course | MATH-361 Probability & Statistics |
+| Institution | NUST CEME, Rawalpindi |
+| Batch | DE-45, Department of Computer Engineering |
+| Student | Abu-Bakar Chaudhary (457242) |
