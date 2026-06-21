@@ -10,7 +10,10 @@ class DebtManagerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.teal),
+      theme: ThemeData(
+        useMaterial3: true, 
+        colorSchemeSeed: Colors.teal,
+      ),
       home: const HomePage(),
     );
   }

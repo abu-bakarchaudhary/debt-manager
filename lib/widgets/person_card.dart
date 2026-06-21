@@ -5,7 +5,12 @@ class PersonCard extends StatelessWidget {
   final double totalAmount;
   final VoidCallback onTap;
 
-  const PersonCard({super.key, required this.name, required this.totalAmount, required this.onTap});
+  const PersonCard({
+    super.key, 
+    required this.name, 
+    required this.totalAmount, 
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +18,20 @@ class PersonCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: ListTile(
         onTap: onTap,
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          name, 
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          totalAmount >= 0 ? "Net Creditor" : "In Debt",
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+        ),
         trailing: Text(
-          "${totalAmount.abs()} PKR",
+          "${totalAmount.abs().toStringAsFixed(2)} PKR",
           style: TextStyle(
-            color: totalAmount >= 0 ? Colors.green : Colors.red,
+            color: totalAmount >= 0 ? Colors.green.shade700 : Colors.red.shade700,
             fontWeight: FontWeight.bold,
+            fontSize: 15,
           ),
         ),
       ),
